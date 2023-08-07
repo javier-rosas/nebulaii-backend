@@ -1,0 +1,34 @@
+org: javier0rosas
+app: nebulaii-backend
+service: nebulaii-backend
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  httpApi:
+    cors: true
+  logs:
+    httpApi: true
+
+package:
+  individually: true
+
+functions:
+  auth:
+    handler: src/auth/handler.handler
+  upload:
+    handler: src/upload/handler.handler
+    events:
+      - httpApi: 
+          path: /upload
+          method: get
+  process:
+    handler: src/process/handler.handler
+  askGpt:
+    handler: src/askGpt/handler.handler
+  payments:
+    handler: src/payments/handler.handler
+
+plugins:
+  - serverless-plugin-typescript
