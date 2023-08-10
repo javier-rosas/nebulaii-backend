@@ -10,6 +10,11 @@ provider:
     cors: true
   logs:
     httpApi: true
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:GetObject"
+      Resource: "arn:aws:s3:::nebulaii-test/*"
 
 package:
   individually: true
@@ -23,8 +28,12 @@ functions:
       - httpApi: 
           path: /upload
           method: get
-  process:
-    handler: src/process/handler.handler
+  embedding:
+    handler: src/embedding/handler.handler
+    events:
+      - httpApi: 
+          path: /embedding
+          method: get
   askGpt:
     handler: src/askGpt/handler.handler
   payments:
@@ -32,3 +41,4 @@ functions:
 
 plugins:
   - serverless-plugin-typescript
+  - serverless-dotenv-plugin
