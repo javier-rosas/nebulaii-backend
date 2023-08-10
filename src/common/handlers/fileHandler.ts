@@ -3,7 +3,7 @@ import {
   getFilesByUserEmail,
   getFileByUserEmailAndFilename,
   deleteFileByUserEmailAndFilename,
-} from "../daos/fileDao";
+} from "../mongoose/queries/file";
 
 export const getFilesByUserEmailHandler = async (event: any) => {
   try {

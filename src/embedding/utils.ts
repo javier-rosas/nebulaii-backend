@@ -1,5 +1,5 @@
 import { get_encoding } from "@dqbd/tiktoken";
-import { MAX_TOKENS, OPEN_AI_API_KEY, AWS_BUCKET } from "./constants";
+import { MAX_TOKENS, OPEN_AI_API_KEY, AWS_BUCKET } from "../common/constants";
 import { TokenTextSplitter } from "langchain/text_splitter";
 import { getEmbedding } from "./getEmbedding";
 import { S3 } from "aws-sdk";

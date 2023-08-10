@@ -4,7 +4,7 @@ import {
   splitContentAndProcessChunks,
   fetchContentFromS3,
 } from "./utils";
-import { OPEN_AI_API_KEY } from "./constants";
+import { OPEN_AI_API_KEY } from "../common/constants";
 
 const key = "meditations.txt";
 

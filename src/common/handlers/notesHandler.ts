@@ -2,7 +2,7 @@ import { createResponse } from "../utils/createResponse";
 import {
   getNotesByUserEmail,
   getNoteByUserEmailAndFilename,
-} from "../daos/notesDao";
+} from "../mongoose/queries/notes";
 
 export const getNotesByUserEmailHandler = async (event: any) => {
   try {

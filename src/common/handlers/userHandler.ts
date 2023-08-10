@@ -1,5 +1,5 @@
 import { createResponse } from "../utils/createResponse";
-import { createOrUpdateUser } from "../daos/userDao";
+import { createOrUpdateUser } from "../mongoose/queries/user";
 
 export const createOrUpdateUserHandler = async (event: any) => {
   try {

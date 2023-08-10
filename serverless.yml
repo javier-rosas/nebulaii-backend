@@ -34,8 +34,8 @@ functions:
       - httpApi: 
           path: /embedding
           method: get
-  askGpt:
-    handler: src/askGpt/handler.handler
+  search:
+    handler: src/search/handler.handler
   payments:
     handler: src/payments/handler.handler
 

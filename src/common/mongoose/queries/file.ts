@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import FileModel from "../mongoose/models/FileModel";
-import NotesModel from "../mongoose/models/NotesModel";
+import FileModel from "../models/FileModel";
+import NotesModel from "../models/NotesModel";
 
 export const createOrUpdateFile = async (fileObj: any) => {
   try {

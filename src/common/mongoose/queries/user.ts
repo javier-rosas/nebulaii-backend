@@ -1,4 +1,4 @@
-import UserModel from "../mongoose/models/UserModel";
+import UserModel from "../models/UserModel";
 
 export const createOrUpdateUser = async (user: any) => {
   try {

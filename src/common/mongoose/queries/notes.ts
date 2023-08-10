@@ -1,4 +1,4 @@
-import NotesModel from "../mongoose/models/NotesModel";
+import NotesModel from "../models/NotesModel";
 
 export const createOrUpdateNotes = async (notesObj: any) => {
   try {

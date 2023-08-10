@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
-import { main } from "./getDocFromS3";
+import { main } from "./main";
 
 export const handler: APIGatewayProxyHandler = async (event, context) => {
   // Your function logic here...
