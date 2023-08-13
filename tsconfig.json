@@ -3,6 +3,17 @@
     "esModuleInterop": true,
     "lib": [
       "dom"
-    ]
+    ],
+    "paths": {
+      "@/types/*": [
+        "./src/embedding/types/*"
+      ],
+      "@/constants": [
+        "./src/common/constants"
+      ],
+      "@/utils/*": [
+        "./src/embedding/utils/*"
+      ],
+    }
   }
 }

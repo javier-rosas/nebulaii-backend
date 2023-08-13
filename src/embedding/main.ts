@@ -1,10 +1,8 @@
-import { getEmbedding } from "./getEmbedding";
-import {
-  isExcedesMaxTokens,
-  splitContentAndProcessChunks,
-  fetchContentFromS3,
-} from "./utils";
-import { OPEN_AI_API_KEY } from "../common/constants";
+import { getEmbedding } from "@/utils/fetchEmbedding";
+import { isExcedesMaxTokens } from "@/utils/helpers";
+import { fetchContentFromS3 } from "@/utils/fetchTxtFromS3";
+import { splitTxtAndProcessChunks } from "@/utils/splitTxtAndProcessChunks";
+import { OPEN_AI_API_KEY } from "@/constants";
 
 const key = "meditations.txt";
 
@@ -14,7 +12,7 @@ export const main = async (): Promise<any> => {
     const content = await fetchContentFromS3(key);
     if (isExcedesMaxTokens(content)) {
       // split content and process in chunks
-      await splitContentAndProcessChunks(content);
+      await splitTxtAndProcessChunks(content);
     } else {
       // embed using open ai api
       await getEmbedding(content, OPEN_AI_API_KEY);
