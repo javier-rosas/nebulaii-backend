@@ -3,7 +3,7 @@ export type Point = {
   vector: number[];
   payload: {
     userEmail: string;
-    textChunk: string;
+    text: string;
     pageNumber: number;
     totalPageCount: number;
   };

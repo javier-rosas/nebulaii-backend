@@ -1,5 +1,5 @@
 import { S3 } from "aws-sdk";
-import { AWS_BUCKET } from "@/constants";
+import { AWS_BUCKET } from "../../common/constants";
 
 export const fetchContentFromS3 = async (key: string): Promise<string> => {
   const s3 = new S3();

@@ -1,7 +1,10 @@
 import axios from "axios";
-import { OPEN_AI_EMBEDDINGS_ENDPOINT, EMBEDDING_MODEL } from "@/constants";
+import {
+  OPEN_AI_EMBEDDINGS_ENDPOINT,
+  EMBEDDING_MODEL,
+} from "../../common/constants";
 
-export const getEmbedding = async (
+export const fetchEmbedding = async (
   inputText: string,
   apiKey: string
 ): Promise<any> => {

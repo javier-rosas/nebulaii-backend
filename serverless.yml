@@ -34,6 +34,7 @@ functions:
       - httpApi: 
           path: /embedding
           method: get
+    timeout: 60
   search:
     handler: src/search/handler.handler
   payments:

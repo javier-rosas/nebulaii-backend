@@ -1,7 +1,9 @@
-import { MAX_TOKENS, OPEN_AI_API_KEY } from "@/constants";
+import { MAX_TOKENS, OPEN_AI_API_KEY } from "../../common/constants";
 import { TokenTextSplitter } from "langchain/text_splitter";
-import { getEmbedding } from "@/utils/fetchEmbedding";
-import { Point } from "@/types/Point";
+import { fetchEmbedding } from "../utils/fetchEmbedding";
+import { Point } from "../types/Point";
+import { v4 as uuidv4 } from "uuid";
+import { putPointsInQdrant } from "../utils/putPointsInQdrant";
 
 export const splitTxtAndProcessChunks = async (
   content: string
@@ -13,21 +15,24 @@ export const splitTxtAndProcessChunks = async (
   try {
     const points: Point[] = [];
     const chunks = await splitter.splitText(content);
-    for (let chunk of chunks) {
+    const totalPageCount = chunks.length;
+    for (let index = 0; index < totalPageCount; index++) {
+      const chunk = chunks[index];
       // embed using open ai api
-      const res = await getEmbedding(chunk, OPEN_AI_API_KEY);
-      const embedding = res?.data[0]?.embedding;
+      const res = await fetchEmbedding(chunk, OPEN_AI_API_KEY);
+      const vector = res?.data[0]?.embedding;
       /**
        * TODO:  create point
-       * */
+       **/
+
       const point: Point = {
-        id: "1",
-        vector: embedding,
+        id: uuidv4(),
+        vector,
         payload: {
           userEmail: "javix98@gmail.com",
-          textChunk: chunk,
-          pageNumber: 1,
-          totalPageCount: 1,
+          text: chunk,
+          pageNumber: index + 1,
+          totalPageCount,
         },
       };
       points.push(point);
