@@ -30,3 +30,39 @@ export const putPointsInQdrant = async (points: {
     throw error;
   }
 };
+
+export const searchPointsInQdrant = async (
+  userEmail: string,
+  vector: number[],
+  limit: number = 3
+) => {
+  try {
+    const response = await axios.post(
+      `${QDRANT_URL}/collections/${QDRANT_COLLECTION_NAME}/points/search`,
+      {
+        vector: vector,
+        limit: limit,
+        filter: {
+          should: [
+            {
+              key: userEmail,
+              match: {
+                value: 1,
+              },
+            },
+          ],
+        },
+      },
+      { headers: HEADERS }
+    );
+
+    if (response.data.status !== "ok") {
+      throw new Error("Failed to search points in Qdrant");
+    }
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error while searching points in Qdrant:", error);
+    throw error;
+  }
+};
