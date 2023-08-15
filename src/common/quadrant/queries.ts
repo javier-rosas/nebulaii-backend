@@ -1,4 +1,4 @@
-import axios from "axios";
+import { QdrantClient } from "@qdrant/js-client-rest";
 import {
   QDRANT_URL,
   QDRANT_COLLECTION_NAME,
@@ -6,63 +6,72 @@ import {
 } from "../../common/constants";
 import { Point } from "../types/Point";
 
-const HEADERS = {
-  "Content-Type": "application/json",
-  "api-key": QDRANT_API_KEY,
+type QdrantPutResponse = {
+  operation_id: number;
+  status: "acknowledged" | "completed";
 };
 
-export const putPointsInQdrant = async (points: {
-  points: Point[];
-}): Promise<void> => {
-  try {
-    const response = await axios.put(
-      `${QDRANT_URL}/collections/${QDRANT_COLLECTION_NAME}/points?wait=true`,
-      points,
-      { headers: HEADERS }
-    );
+type QdrantSearchResponse = {
+  id: string | number;
+  version: number;
+  score: number;
+  payload?: Record<string, unknown> | { [key: string]: unknown };
+  vector?: number[] | Record<string, unknown> | { [key: string]: number[] };
+}[];
 
-    // console.log("response", response.data);
-    if (response.data.status !== "ok") {
-      throw new Error("Failed to insert points to Qdrant");
-    }
+// connect to Qdrant Cloud
+const client = new QdrantClient({
+  url: QDRANT_URL,
+  apiKey: QDRANT_API_KEY,
+});
+
+export const putPoints = async (
+  points: Point[]
+): Promise<QdrantPutResponse> => {
+  try {
+    const res = await client.upsert(QDRANT_COLLECTION_NAME, {
+      wait: true,
+      points,
+    });
+    return res;
   } catch (error) {
-    console.error("Error while inserting points to Qdrant:", error);
-    throw error;
+    throw new Error(
+      `Failed to add points to quadrant. Reason: ${error.message}`
+    );
   }
 };
 
-export const searchPointsInQdrant = async (
+export const searchPoints = async (
   userEmail: string,
+  documentName: string,
   vector: number[],
   limit: number = 3
-) => {
+): Promise<QdrantSearchResponse> => {
   try {
-    const response = await axios.post(
-      `${QDRANT_URL}/collections/${QDRANT_COLLECTION_NAME}/points/search`,
-      {
-        vector: vector,
-        limit: limit,
-        filter: {
-          should: [
-            {
-              key: userEmail,
-              match: {
-                value: 1,
-              },
+    const res = await client.search(QDRANT_COLLECTION_NAME, {
+      vector,
+      limit,
+      filter: {
+        must: [
+          {
+            key: "userEmail",
+            match: {
+              value: userEmail,
             },
-          ],
-        },
+          },
+          {
+            key: "documentName",
+            match: {
+              value: documentName,
+            },
+          },
+        ],
       },
-      { headers: HEADERS }
-    );
-
-    if (response.data.status !== "ok") {
-      throw new Error("Failed to search points in Qdrant");
-    }
-
-    return response.data.result;
+    });
+    return res;
   } catch (error) {
-    console.error("Error while searching points in Qdrant:", error);
-    throw error;
+    throw new Error(
+      `Failed to add points to quadrant. Reason: ${error.message}`
+    );
   }
 };
