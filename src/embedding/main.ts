@@ -1,42 +1,55 @@
-import { fetchEmbedding } from "../common/openai/fetchEmbedding";
-import { isExcedesMaxTokens } from "./utils/general";
-import { fetchTxtFromS3 } from "./utils/fetchTxtFromS3";
-import { splitTxtAndProcessChunks } from "./utils/splitTxtAndProcessChunks";
+import {
+  fetchTxtFromS3,
+  splitTxtAndProcessChunks,
+  createPointFromChunk,
+} from "./utils";
+import { isExcedesMaxTokens } from "./helpers";
 import { putPoints } from "../common/quadrant/queries";
-import { OPEN_AI_API_KEY } from "../common/constants";
 
-const key = "meditations.txt";
+const KEY = "meditations.txt";
+const CHUNK_SIZE = 50;
 
 export const main = async (
   userEmail: string,
   documentName: string
 ): Promise<any> => {
-  console.log("Reading the object from S3", key);
+  console.log("Reading the object from S3", KEY);
   try {
     /**
-     * TODO: GENERATE KEY LATER
-     * const key = `${userEmail}/${documentName}.txt`
-     */
-    const content = await fetchTxtFromS3(key);
+     * TODO: Later on, generate a dynamic key based on user and document info
+     * const dynamicKey = `${userEmail}/${documentName}.txt`
+     * **/
+    const content = await fetchTxtFromS3(KEY);
+
     if (isExcedesMaxTokens(content)) {
-      // split content and process in chunks
       const points = await splitTxtAndProcessChunks(
         userEmail,
         documentName,
         content
       );
-      const chunkSize = 50;
-      for (let i = 0; i < points.length; i += chunkSize) {
-        const chunk = points.slice(i, i + chunkSize);
-        await putPoints(chunk);
-      }
+      await processPointsInChunks(points);
     } else {
-      // embed using open ai api
-      await fetchEmbedding(content, OPEN_AI_API_KEY);
+      const point = await createPointFromChunk(
+        content,
+        0,
+        userEmail,
+        documentName,
+        1
+      );
+      await putPoints([point]);
     }
+
     return content;
   } catch (err) {
     console.error("Error processing file: ", err);
     throw err;
+  }
+};
+
+// Created a separate function for the chunk processing logic to reduce clutter
+const processPointsInChunks = async (points: any[]) => {
+  for (let i = 0; i < points.length; i += CHUNK_SIZE) {
+    const pointsChunk = points.slice(i, i + CHUNK_SIZE);
+    await putPoints(pointsChunk);
   }
 };

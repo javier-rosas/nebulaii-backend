@@ -1,5 +1,5 @@
 import { get_encoding } from "@dqbd/tiktoken";
-import { MAX_TOKENS } from "../../common/constants";
+import { MAX_TOKENS } from "../common/constants";
 
 const countTokens = (content: string): number => {
   const encoding = get_encoding("cl100k_base");
