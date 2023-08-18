@@ -1,10 +1,9 @@
 import { QdrantClient } from "@qdrant/js-client-rest";
-import {
-  QDRANT_URL,
-  QDRANT_COLLECTION_NAME,
-  QDRANT_API_KEY,
-} from "../../common/constants";
 import { Point } from "../types/Point";
+
+const QDRANT_URL = process.env.QDRANT_URL;
+const QDRANT_COLLECTION_NAME = process.env.QDRANT_COLLECTION_NAME;
+const QDRANT_API_KEY = process.env.QDRANT_API_KEY;
 
 type QdrantPutResponse = {
   operation_id: number;

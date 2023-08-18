@@ -2,8 +2,8 @@ import {
   fetchTxtFromS3,
   splitTxtAndProcessChunks,
   createPointFromChunk,
-} from "./utils";
-import { isExcedesMaxTokens } from "./helpers";
+} from "./helpers";
+import { isExcedesMaxTokens } from "./utils";
 import { putPoints } from "../common/quadrant/queries";
 
 const KEY = "meditations.txt";
@@ -27,7 +27,7 @@ export const main = async (
         documentName,
         content
       );
-      await processPointsInChunks(points);
+      await putPointsInChunks(points);
     } else {
       const point = await createPointFromChunk(
         content,
@@ -47,7 +47,7 @@ export const main = async (
 };
 
 // Created a separate function for the chunk processing logic to reduce clutter
-const processPointsInChunks = async (points: any[]) => {
+const putPointsInChunks = async (points: any[]) => {
   for (let i = 0; i < points.length; i += CHUNK_SIZE) {
     const pointsChunk = points.slice(i, i + CHUNK_SIZE);
     await putPoints(pointsChunk);

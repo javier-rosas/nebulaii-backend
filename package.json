@@ -13,7 +13,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.101",
+    "@types/aws-lambda": "^8.10.119",
     "@types/jsonwebtoken": "^9.0.2",
     "serverless": "^3.21.0",
     "serverless-dotenv-plugin": "^6.0.0",

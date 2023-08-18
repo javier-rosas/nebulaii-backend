@@ -16,12 +16,22 @@ provider:
         - "s3:GetObject"
       Resource: "arn:aws:s3:::nebulaii-test/*"
 
+
+custom:
+  serverless-offline:
+    httpPort: 4000
+
+
 package:
   individually: true
 
 functions:
   auth:
     handler: src/auth/handler.handler
+    events:
+      - httpApi:
+          path: /auth
+          method: post
   upload:
     handler: src/upload/handler.handler
     events:
@@ -39,8 +49,15 @@ functions:
     handler: src/search/handler.handler
   payments:
     handler: src/payments/handler.handler
+  mongo:
+    handler: src/mongo/handler.handler
+    events:
+      - httpApi:
+          path: /mongo
+          method: post
 
 plugins:
   - serverless-plugin-typescript
   - serverless-dotenv-plugin
   - serverless-offline
+

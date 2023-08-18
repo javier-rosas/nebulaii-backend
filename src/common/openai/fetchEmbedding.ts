@@ -1,5 +1,7 @@
 import axios from "axios";
-import { OPEN_AI_EMBEDDINGS_ENDPOINT, EMBEDDING_MODEL } from "../constants";
+
+const OPEN_AI_EMBEDDINGS_ENDPOINT = process.env.OPEN_AI_EMBEDDINGS_ENDPOINT;
+const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL;
 
 export const fetchEmbedding = async (
   inputText: string,

@@ -1,18 +1,18 @@
+import middy from "middy";
+import { verifyTokenMiddleware } from "../common/utils/verifyTokenMiddleware";
 import { APIGatewayProxyHandler } from "aws-lambda";
 import { main } from "./main";
 
-export const handler: APIGatewayProxyHandler = async (event: any, context) => {
+const JWT_SECRET = process.env.JWT_SECRET;
+
+export const mainHandler: APIGatewayProxyHandler = async (
+  event: any,
+  context
+) => {
   // Your function logic here...
-  const userEmail = event.user.email;
-  console.log(
-    "🚀 ~ file: handler.ts:7 ~ consthandler:APIGatewayProxyHandler= ~ userEmail:",
-    userEmail
-  );
-  const documentName = event.document.name;
-  console.log(
-    "🚀 ~ file: handler.ts:9 ~ consthandler:APIGatewayProxyHandler= ~ documentName:",
-    documentName
-  );
+  const userEmail = event.user;
+  const documentName = event.body.name;
+
   await main(userEmail, documentName);
   return {
     statusCode: 200,
@@ -21,3 +21,7 @@ export const handler: APIGatewayProxyHandler = async (event: any, context) => {
     }),
   };
 };
+
+export const handler = middy(mainHandler).use(
+  verifyTokenMiddleware({ secret: JWT_SECRET })
+);
