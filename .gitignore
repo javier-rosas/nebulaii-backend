@@ -12,3 +12,12 @@ jspm_packages
 .build
 
 src/common/local
+
+# Python ignores
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.egg
+*.pyd
+*.so

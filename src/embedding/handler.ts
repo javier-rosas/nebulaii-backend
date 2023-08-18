@@ -5,14 +5,9 @@ import { main } from "./main";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const mainHandler: APIGatewayProxyHandler = async (
-  event: any,
-  context
-) => {
-  // Your function logic here...
-  const userEmail = event.user;
-  const documentName = event.body.name;
-
+export const mainHandler: APIGatewayProxyHandler = async (event: any) => {
+  const userEmail = event.pathParameters.userEmail;
+  const documentName = event.pathParameters.documentName;
   await main(userEmail, documentName);
   return {
     statusCode: 200,

@@ -1,5 +1,4 @@
 import middy from "middy";
-import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { mongooseConnect } from "../common/mongoose/mongooseConnect";
 import { createOrUpdateUser } from "../common/mongoose/queries/user";
 import { getFilesByUserEmail } from "../common/mongoose/queries/file";
@@ -8,24 +7,27 @@ import { verifyTokenMiddleware } from "../common/utils/verifyTokenMiddleware";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const mainHandler: APIGatewayProxyHandlerV2 = async (
-  event: any
-): Promise<any> => {
+// Handle POST request for creating or updating user
+async function handleCreateOrUpdateUser(event: any) {
+  const user = JSON.parse(event.body);
+  return await createOrUpdateUser(user);
+}
+
+// Handle GET request to fetch files by user email
+async function handleGetFilesByUserEmail(event: any) {
+  const userEmail = event.pathParameters.userEmail;
+  return await getFilesByUserEmail(userEmail);
+}
+
+const mainHandler = async (event: any): Promise<any> => {
   try {
     await mongooseConnect();
+
     switch (event.routeKey) {
       case "POST /mongo":
-        const userJwtDecoded = event.user;
-        const user = JSON.parse(event.body);
-        if (userJwtDecoded.email !== user.email) {
-          throw new Error(
-            "Decoded user email and user email in body don't match."
-          );
-        }
-        return await createOrUpdateUser(user);
+        return await handleCreateOrUpdateUser(event);
       case "GET /mongo/{userEmail}/files":
-        const userEmail = event.pathParameters.userEmail;
-        return await getFilesByUserEmail(userEmail);
+        return await handleGetFilesByUserEmail(event);
       default:
         return createResponse(404, { error: "Not Found" });
     }

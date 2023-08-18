@@ -55,6 +55,13 @@ functions:
       - httpApi:
           path: /mongo
           method: post
+  process-document:
+    runtime: python3.9
+    handler: src/process-document/handler.handler
+    events:
+      - httpApi:
+          path: /process-document
+          method: get
 
 plugins:
   - serverless-plugin-typescript
