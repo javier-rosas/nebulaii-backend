@@ -21,3 +21,8 @@ __pycache__/
 *.egg
 *.pyd
 *.so
+
+venv
+
+# package-lock
+package-lock.json

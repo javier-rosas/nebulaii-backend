@@ -53,8 +53,17 @@ functions:
     handler: src/mongo/handler.handler
     events:
       - httpApi:
-          path: /mongo
+          path: /users
           method: post
+      - httpApi:
+          path: /users/{userEmail}/files
+          method: get
+      - httpApi:
+          path: /users/{userEmail}/files/{filename}
+          method: get
+      - httpApi:
+          path: /users/{userEmail}/files/{filename}
+          method: delete
   process-document:
     runtime: python3.9
     handler: src/process-document/handler.handler
@@ -67,4 +76,6 @@ plugins:
   - serverless-plugin-typescript
   - serverless-dotenv-plugin
   - serverless-offline
+  - serverless-plugin-include-dependencies
+
 
