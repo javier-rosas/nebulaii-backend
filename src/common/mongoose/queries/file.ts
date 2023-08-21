@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import FileModel from "../models/FileModel";
-import NotesModel from "../models/NotesModel";
 
 export const createOrUpdateFile = async (fileObj: any) => {
   try {
@@ -52,10 +51,7 @@ export const deleteFileByUserEmailAndFilename = async (
 ) => {
   const session = await mongoose.startSession();
   try {
-    await session.withTransaction(async () => {
-      await FileModel.findOneAndDelete({ userEmail, filename }, { session });
-      await NotesModel.findOneAndDelete({ userEmail, filename }, { session });
-    });
+    await FileModel.findOneAndDelete({ userEmail, filename }, { session });
   } catch (err) {
     console.log("deleteFileByUserEmailAndFilename", err);
     throw new Error(
