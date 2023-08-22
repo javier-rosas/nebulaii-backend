@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from "uuid";
 import { fetchEmbedding } from "../common/openai/fetchEmbedding";
 import { Point } from "../common/types/Point";
 import { S3 } from "aws-sdk";
-import { promises as fs } from "fs";
 import { TokenTextSplitter } from "langchain/text_splitter";
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY;
@@ -24,18 +23,6 @@ export const fetchTxtFromS3 = async (key: string): Promise<string> => {
   } catch (error) {
     console.error("Error while reading the object:", error);
     throw error;
-  }
-};
-
-export const fetchTxtFromLocal = async (path: string): Promise<string> => {
-  try {
-    return await fs.readFile(
-      "/Users/javierrosas/Documents/nebulaii-project/nebulaii-backend/src/common/local/meditations.txt",
-      "utf-8"
-    );
-  } catch (err) {
-    console.error("Error reading the file", err);
-    return "";
   }
 };
 

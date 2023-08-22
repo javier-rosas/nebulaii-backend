@@ -38,11 +38,11 @@ functions:
       - httpApi: 
           path: /upload
           method: get
-  embedding:
-    handler: src/embedding/handler.handler
+  process-doc:
+    handler: src/process-doc/handler.handler
     events:
       - httpApi: 
-          path: /embedding
+          path: /users/{userEmail}/documents/{documentName}/process-doc
           method: get
     timeout: 60
   search:
@@ -64,12 +64,12 @@ functions:
       - httpApi:
           path: /users/{userEmail}/files/{filename}
           method: delete
-  process-document:
+  python-func:
     runtime: python3.9
-    handler: src/process-document/handler.handler
+    handler: src/python-func/handler.handler
     events:
       - httpApi:
-          path: /process-document
+          path: /python-func
           method: get
 
 plugins:

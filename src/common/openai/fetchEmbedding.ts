@@ -21,7 +21,9 @@ export const fetchEmbedding = async (
     if (!response.data) throw new Error("No data found in response");
     return response.data;
   } catch (error) {
-    console.error("Error fetching embedding:", error);
+    if (error.response && error.response.data) {
+      console.error("OpenAI error details:", error.response.data);
+    }
     throw error;
   }
 };
