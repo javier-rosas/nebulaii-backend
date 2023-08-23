@@ -5,7 +5,11 @@ export type Point = {
     userEmail: string;
     documentName: string;
     text: string;
-    pageNumber: number;
-    totalPageCount: number;
+    parentId: string;
   };
+};
+
+export type Chunk = {
+  content: string;
+  parentId?: string; // only for small chunks
 };

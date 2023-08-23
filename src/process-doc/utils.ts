@@ -1,6 +1,6 @@
 import { get_encoding } from "@dqbd/tiktoken";
 
-const MAX_TOKENS = Number(process.env.MAX_TOKENS);
+const PARENT_MAX_TOKENS = Number(process.env.PARENT_MAX_TOKENS);
 
 const countTokens = (content: string): number => {
   const encoding = get_encoding("cl100k_base");
@@ -11,7 +11,7 @@ const countTokens = (content: string): number => {
 
 export const isExcedesMaxTokens = (content: string): boolean => {
   const numTokens = countTokens(content);
-  return numTokens > MAX_TOKENS;
+  return numTokens > PARENT_MAX_TOKENS;
 };
 
 export const countWords = (content: string): number => {

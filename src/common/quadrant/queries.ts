@@ -1,5 +1,5 @@
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { Point } from "../types/Point";
+import { Point } from "../types";
 
 const QDRANT_URL = process.env.QDRANT_URL;
 const QDRANT_COLLECTION_NAME = process.env.QDRANT_COLLECTION_NAME;

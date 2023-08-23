@@ -26,3 +26,5 @@ venv
 
 # package-lock
 package-lock.json
+
+.vscode/settings.json
