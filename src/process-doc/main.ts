@@ -6,6 +6,7 @@ import {
 import { isExcedesMaxTokens } from "./utils";
 import { putPoints } from "../common/quadrant/queries";
 import { Chunk } from "../common/types";
+import { createResponse } from "../common/utils/createResponse";
 
 const KEY = "meditations.txt";
 const CHUNK_SIZE = 50;
@@ -37,7 +38,7 @@ export const main = async (
       const point = await createPointFromChunk(chunk, userEmail, documentName);
       await putPoints([point]);
     }
-    return content;
+    return createResponse(200, { message: "Success" });
   } catch (err) {
     console.error("Error processing file: ", err);
     throw err;

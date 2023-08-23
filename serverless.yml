@@ -44,7 +44,7 @@ functions:
       - httpApi: 
           path: /users/{userEmail}/documents/{documentName}/process-doc
           method: get
-    timeout: 60
+    timeout: 200
   search:
     handler: src/search/handler.handler
   payments:
