@@ -10,8 +10,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 async function handleMainEvent(event: any) {
   const userEmail = event.pathParameters.userEmail;
   const documentName = event.pathParameters.documentName;
-  console.log("userEmail", userEmail);
-  console.log("documentName", documentName);
   return await main(userEmail, documentName);
 }
 

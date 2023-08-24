@@ -60,7 +60,6 @@ const splitTextIntoChunks = async (content: string): Promise<Chunk[]> => {
     const smallChunks = await splitIntoSmallChunks(largeChunk, parentId);
     result.push(...smallChunks);
   }
-
   return result;
 };
 
@@ -93,7 +92,6 @@ export const createPointFromChunk = async (
 ): Promise<Point> => {
   const res = await fetchEmbedding(chunk.content, OPEN_AI_API_KEY);
   const vector = res?.data[0]?.embedding;
-
   return {
     id: uuidv4(),
     vector,
