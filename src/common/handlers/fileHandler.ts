@@ -3,7 +3,7 @@ import {
   getFilesByUserEmail,
   getFileByUserEmailAndFilename,
   deleteFileByUserEmailAndFilename,
-} from "../mongoose/queries/file";
+} from "../mongoose/queries/document";
 
 export const getFilesByUserEmailHandler = async (event: any) => {
   try {

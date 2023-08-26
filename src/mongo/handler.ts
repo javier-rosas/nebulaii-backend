@@ -2,10 +2,10 @@ import middy from "middy";
 import { mongooseConnect } from "../common/mongoose/mongooseConnect";
 import { createOrUpdateUser } from "../common/mongoose/queries/user";
 import {
-  getFilesByUserEmail,
-  getFileByUserEmailAndFilename,
-  deleteFileByUserEmailAndFilename,
-} from "../common/mongoose/queries/file";
+  getDocumentsByUserEmail,
+  getDocumentByUserEmailAndDocumentName,
+  deleteDocumentByUserEmailAndDocumentName,
+} from "../common/mongoose/queries/document";
 import { createResponse } from "../common/utils/createResponse";
 import { verifyTokenMiddleware } from "../common/utils/verifyTokenMiddleware";
 
@@ -17,24 +17,27 @@ async function handleCreateOrUpdateUser(event: any) {
   return await createOrUpdateUser(user);
 }
 
-// Handle GET request to fetch files by user email
-async function handleGetFilesByUserEmail(event: any) {
+// Handle GET request to fetch documents by user email
+async function handleGetDocumentsByUserEmail(event: any) {
   const userEmail = event.pathParameters.userEmail;
-  return await getFilesByUserEmail(userEmail);
+  return await getDocumentsByUserEmail(userEmail);
 }
 
-// Handle GET request to fetch file by user email and filename
-async function handleGetFileByUserEmailAndFilename(event: any) {
+// Handle GET request to fetch document by user email and documen name
+async function handleGetDocumentByUserEmailAndDocumentName(event: any) {
   const userEmail = event.pathParameters.userEmail;
-  const filename = event.pathParameters.filename;
-  return await getFileByUserEmailAndFilename(userEmail, filename);
+  const documentName = event.pathParameters.documentName;
+  return await getDocumentByUserEmailAndDocumentName(userEmail, documentName);
 }
 
-// Handle DELETE request to delete file by user email and filename
-async function handleDeleteFileByUserEmailAndFilename(event: any) {
+// Handle DELETE request to delete document by user email and document name
+async function handleDeleteDocumentByUserEmailAndDocumentName(event: any) {
   const userEmail = event.pathParameters.userEmail;
-  const filename = event.pathParameters.filename;
-  return await deleteFileByUserEmailAndFilename(userEmail, filename);
+  const documentName = event.pathParameters.documentName;
+  return await deleteDocumentByUserEmailAndDocumentName(
+    userEmail,
+    documentName
+  );
 }
 
 const mainHandler = async (event: any): Promise<any> => {
@@ -43,12 +46,12 @@ const mainHandler = async (event: any): Promise<any> => {
     switch (event.routeKey) {
       case "POST /users":
         return await handleCreateOrUpdateUser(event);
-      case "GET /users/{userEmail}/files":
-        return await handleGetFilesByUserEmail(event);
-      case "GET /users/{userEmail}/files/{filename}":
-        return await handleGetFileByUserEmailAndFilename(event);
-      case "DELETE /users/{userEmail}/files/{filename}":
-        return await handleDeleteFileByUserEmailAndFilename(event);
+      case "GET /users/{userEmail}/documents":
+        return await handleGetDocumentsByUserEmail(event);
+      case "GET /users/{userEmail}/documents/{documentName}":
+        return await handleGetDocumentByUserEmailAndDocumentName(event);
+      case "DELETE /users/{userEmail}/documents/{documentName}":
+        return await handleDeleteDocumentByUserEmailAndDocumentName(event);
       default:
         return createResponse(404, { error: "Not Found" });
     }
