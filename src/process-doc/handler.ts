@@ -3,6 +3,7 @@ import { verifyTokenMiddleware } from "../common/utils/verifyTokenMiddleware";
 import { APIGatewayProxyHandler } from "aws-lambda";
 import { main } from "./main";
 import { createResponse } from "../common/utils/createResponse";
+import { mongooseConnect } from "../common/mongoose/mongooseConnect";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -15,6 +16,7 @@ async function handleMainEvent(event: any) {
 
 export const mainHandler: APIGatewayProxyHandler = async (event: any) => {
   try {
+    await mongooseConnect();
     switch (event.routeKey) {
       case "GET /users/{userEmail}/documents/{documentName}/process-doc":
         return await handleMainEvent(event);

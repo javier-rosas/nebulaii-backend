@@ -2,12 +2,15 @@ import {
   fetchTxtFromS3,
   splitTxtAndProcessChunks,
   createPointFromChunk,
+  preprocessTxt,
 } from "./helpers";
 import { isExcedesMaxTokens } from "./utils";
-import { putPoints } from "../common/quadrant/queries";
+import { putPoints, deletePoints } from "../common/quadrant/queries";
 import { Chunk } from "../common/types";
 import { createResponse } from "../common/utils/createResponse";
 import { Point } from "../common/types";
+import { v4 as uuidv4 } from "uuid";
+import { createOrUpdateChunk } from "../common/mongoose/queries/largeChunk";
 
 const CHUNK_SIZE = 50;
 
@@ -17,8 +20,9 @@ export const main = async (
 ): Promise<any> => {
   try {
     const bucketKey = `${userEmail}/${documentName}`;
-    console.log("Reading the object from S3", bucketKey);
-    const content = await fetchTxtFromS3(bucketKey);
+    const rawContent = await fetchTxtFromS3(bucketKey);
+    const content = preprocessTxt(rawContent);
+    await deletePoints(userEmail, documentName);
     if (isExcedesMaxTokens(content)) {
       // If the document is too large, split it into chunks and process each chunk
       const points = await splitTxtAndProcessChunks(
@@ -28,10 +32,16 @@ export const main = async (
       );
       await putPointsInChunks(points);
     } else {
+      // If the document is small enough, just process it as a single chunk
       const chunk: Chunk = {
         content,
       };
-      // If the document is small enough, just process it as a single chunk
+      await createOrUpdateChunk({
+        _id: uuidv4(),
+        userEmail,
+        documentName,
+        text: content,
+      });
       const point = await createPointFromChunk(chunk, userEmail, documentName);
       await putPoints([point]);
     }

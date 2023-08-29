@@ -13,3 +13,10 @@ export type Chunk = {
   content: string;
   parentId?: string; // only for small chunks
 };
+
+export type LargeChunk = {
+  _id: string;
+  userEmail: string;
+  documentName: string;
+  text: string;
+};

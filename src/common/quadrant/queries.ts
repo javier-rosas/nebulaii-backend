@@ -18,6 +18,11 @@ type QdrantSearchResponse = {
   vector?: number[] | Record<string, unknown> | { [key: string]: number[] };
 }[];
 
+type QdrantDeleteResponse = {
+  operation_id: number;
+  status: "acknowledged" | "completed";
+};
+
 // connect to Qdrant Cloud
 const client = new QdrantClient({
   url: QDRANT_URL,
@@ -36,6 +41,39 @@ export const putPoints = async (
   } catch (error) {
     throw new Error(
       `Failed to add points to quadrant. Reason: ${error.message}`
+    );
+  }
+};
+
+export const deletePoints = async (
+  userEmail: string,
+  documentName: string
+): Promise<QdrantDeleteResponse> => {
+  try {
+    const res = await client.delete(QDRANT_COLLECTION_NAME, {
+      wait: true,
+
+      filter: {
+        must: [
+          {
+            key: "userEmail",
+            match: {
+              value: userEmail,
+            },
+          },
+          {
+            key: "documentName",
+            match: {
+              value: documentName,
+            },
+          },
+        ],
+      },
+    });
+    return res;
+  } catch (error) {
+    throw new Error(
+      `Failed to delete points from quadrant. Reason: ${error.message}`
     );
   }
 };

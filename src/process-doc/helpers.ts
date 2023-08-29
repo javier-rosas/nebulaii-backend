@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import { fetchEmbedding } from "../common/openai/fetchEmbedding";
-import { Point, Chunk } from "../common/types";
+import { Point, Chunk, LargeChunk } from "../common/types";
 import { S3 } from "aws-sdk";
 import { TokenTextSplitter } from "langchain/text_splitter";
+import { createOrUpdateChunks } from "../common/mongoose/queries/largeChunk";
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY;
 const AWS_BUCKET = process.env.AWS_BUCKET;
@@ -25,6 +26,12 @@ export const fetchTxtFromS3 = async (key: string): Promise<string> => {
     console.error("Error while reading the object:", error);
     throw error;
   }
+};
+
+export const preprocessTxt = (text: string): string => {
+  return text
+    .replace(/\s*\n\s*/g, "\n") // Replace multiple newlines and spaces around newlines with a single newline
+    .replace(/ +/g, " "); // Replace multiple spaces with a single space
 };
 
 const splitIntoLargeChunks = async (content: string): Promise<string[]> => {
@@ -51,15 +58,48 @@ const splitIntoSmallChunks = async (
   }));
 };
 
-const splitTextIntoChunks = async (content: string): Promise<Chunk[]> => {
+const saveLargeChunksToMongoDB = async (
+  content: string,
+  userEmail: string,
+  documentName: string
+): Promise<LargeChunk[]> => {
   const largeChunks = await splitIntoLargeChunks(content);
-  const result: Chunk[] = [];
-  for (let i = 0; i < largeChunks.length; i++) {
-    const largeChunk = largeChunks[i];
+  const largeChunkDocuments: LargeChunk[] = largeChunks.map((largeChunk) => {
     const parentId = uuidv4();
+    return {
+      _id: parentId,
+      userEmail: userEmail,
+      documentName: documentName,
+      text: largeChunk,
+    };
+  });
+
+  // Save all the large chunks to MongoDB at once
+  await createOrUpdateChunks(largeChunkDocuments);
+
+  return largeChunkDocuments;
+};
+
+const splitTextIntoChunks = async (
+  largeChunkDocuments: LargeChunk[]
+): Promise<Chunk[]> => {
+  const result: Chunk[] = [];
+
+  for (const largeChunkDocument of largeChunkDocuments) {
+    const largeChunk = largeChunkDocument.text;
+    const parentId = largeChunkDocument._id;
+
     const smallChunks = await splitIntoSmallChunks(largeChunk, parentId);
-    result.push(...smallChunks);
+    // Add the userEmail and documentName to each small chunk
+    result.push(
+      ...smallChunks.map((chunk) => ({
+        ...chunk,
+        userEmail: largeChunkDocument.userEmail,
+        documentName: largeChunkDocument.documentName,
+      }))
+    );
   }
+
   return result;
 };
 
@@ -69,7 +109,12 @@ export const splitTxtAndProcessChunks = async (
   content: string
 ): Promise<Point[]> => {
   try {
-    const smallChunks = await splitTextIntoChunks(content);
+    const largeChunkDocuments = await saveLargeChunksToMongoDB(
+      content,
+      userEmail,
+      documentName
+    );
+    const smallChunks = await splitTextIntoChunks(largeChunkDocuments);
     const points = await Promise.all(
       smallChunks.map((chunk: Chunk) =>
         createPointFromChunk(chunk, userEmail, documentName)

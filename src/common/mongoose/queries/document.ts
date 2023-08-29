@@ -4,7 +4,7 @@ export const createOrUpdateDocument = async (documentObj: any) => {
   try {
     const filter = {
       userEmail: documentObj.userEmail,
-      documentname: documentObj.documentname,
+      documentName: documentObj.documentName,
     };
     const options = {
       new: true,
@@ -34,10 +34,10 @@ export const getDocumentsByUserEmail = async (userEmail: string) => {
 
 export const getDocumentByUserEmailAndDocumentName = async (
   userEmail: string,
-  documentname: string
+  documentName: string
 ) => {
   try {
-    const document = await DocumentModel.findOne({ userEmail, documentname });
+    const document = await DocumentModel.findOne({ userEmail, documentName });
     return document;
   } catch (err) {
     throw new Error("Error getting document by user email and documentname");
@@ -46,10 +46,10 @@ export const getDocumentByUserEmailAndDocumentName = async (
 
 export const deleteDocumentByUserEmailAndDocumentName = async (
   userEmail: string,
-  documentname: string
+  documentName: string
 ) => {
   try {
-    await DocumentModel.findOneAndDelete({ userEmail, documentname });
+    await DocumentModel.findOneAndDelete({ userEmail, documentName });
   } catch (err) {
     console.log("deleteDocumentByUserEmailAnddocumentname", err);
     throw new Error(
