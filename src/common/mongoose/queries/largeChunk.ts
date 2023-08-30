@@ -48,7 +48,11 @@ export const getChunkByUserEmailAndDocumentName = async (
   documentName: string
 ) => {
   try {
-    const document = await LargeChunkModel.findOne({ userEmail, documentName });
+    const document = await LargeChunkModel.findOne({
+      _id,
+      userEmail,
+      documentName,
+    });
     return document;
   } catch (err) {
     throw new Error("Error getting document by user email and documentname");
@@ -61,7 +65,7 @@ export const deleteChunkByUserEmailAndDocumentName = async (
   documentName: string
 ) => {
   try {
-    await LargeChunkModel.findOneAndDelete({ userEmail, documentName });
+    await LargeChunkModel.findOneAndDelete({ _id, userEmail, documentName });
   } catch (err) {
     console.log("deleteDocumentByUserEmailAnddocumentname", err);
     throw new Error(

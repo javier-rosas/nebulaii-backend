@@ -10,6 +10,7 @@ const AWS_BUCKET = process.env.AWS_BUCKET;
 const PARENT_MAX_TOKENS = Number(process.env.PARENT_MAX_TOKENS);
 const CHILD_MAX_TOKENS = Number(process.env.CHILD_MAX_TOKENS);
 
+// Fetches a text file from an AWS S3 bucket.
 export const fetchTxtFromS3 = async (key: string): Promise<string> => {
   const s3 = new S3();
   const params: S3.GetObjectRequest = {
@@ -28,12 +29,14 @@ export const fetchTxtFromS3 = async (key: string): Promise<string> => {
   }
 };
 
+// Preprocesses the text by replacing multiple newlines and spaces with single ones.
 export const preprocessTxt = (text: string): string => {
   return text
     .replace(/\s*\n\s*/g, "\n") // Replace multiple newlines and spaces around newlines with a single newline
     .replace(/ +/g, " "); // Replace multiple spaces with a single space
 };
 
+// Splits the content into large chunks based on the PARENT_MAX_TOKENS.
 const splitIntoLargeChunks = async (content: string): Promise<string[]> => {
   const splitter = new TokenTextSplitter({
     chunkSize: PARENT_MAX_TOKENS,
@@ -43,6 +46,7 @@ const splitIntoLargeChunks = async (content: string): Promise<string[]> => {
   return chunks;
 };
 
+// Splits a large chunk into smaller chunks based on the CHILD_MAX_TOKENS and assigns the same parent ID to all of them.
 const splitIntoSmallChunks = async (
   largeChunk: string,
   parentId: string
@@ -58,6 +62,7 @@ const splitIntoSmallChunks = async (
   }));
 };
 
+// Splits the content into large chunks and saves them to MongoDB with a generated parent ID.
 const saveLargeChunksToMongoDB = async (
   content: string,
   userEmail: string,
@@ -73,24 +78,20 @@ const saveLargeChunksToMongoDB = async (
       text: largeChunk,
     };
   });
-
   // Save all the large chunks to MongoDB at once
   await createOrUpdateChunks(largeChunkDocuments);
-
   return largeChunkDocuments;
 };
 
+// Splits the large chunks into smaller chunks, and assigns the same parent ID, userEmail, and documentName to all of them.
 const splitTextIntoChunks = async (
   largeChunkDocuments: LargeChunk[]
 ): Promise<Chunk[]> => {
   const result: Chunk[] = [];
-
   for (const largeChunkDocument of largeChunkDocuments) {
     const largeChunk = largeChunkDocument.text;
     const parentId = largeChunkDocument._id;
-
     const smallChunks = await splitIntoSmallChunks(largeChunk, parentId);
-    // Add the userEmail and documentName to each small chunk
     result.push(
       ...smallChunks.map((chunk) => ({
         ...chunk,
@@ -103,6 +104,7 @@ const splitTextIntoChunks = async (
   return result;
 };
 
+// Splits the content into large and small chunks, and converts each small chunk into a point.
 export const splitTxtAndProcessChunks = async (
   userEmail: string,
   documentName: string,
@@ -130,6 +132,7 @@ export const splitTxtAndProcessChunks = async (
   }
 };
 
+// Fetches the embedding for the chunk content and creates a point object.
 export const createPointFromChunk = async (
   chunk: Chunk,
   userEmail: string,

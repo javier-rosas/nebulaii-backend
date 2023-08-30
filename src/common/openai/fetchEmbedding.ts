@@ -17,10 +17,7 @@ export const fetchEmbedding = async (
     model: EMBEDDING_MODEL,
   };
   try {
-    const response = await axios.post(endpoint, data, {
-      headers,
-      timeout: 10000,
-    });
+    const response = await axios.post(endpoint, data, { headers });
     if (!response.data) throw new Error("No data found in response");
     return response.data;
   } catch (error) {

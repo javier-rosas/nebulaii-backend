@@ -1,27 +1,14 @@
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { Point } from "../types";
+import {
+  Point,
+  QdrantPutResponse,
+  QdrantSearchResponse,
+  QdrantDeleteResponse,
+} from "../types";
 
 const QDRANT_URL = process.env.QDRANT_URL;
 const QDRANT_COLLECTION_NAME = process.env.QDRANT_COLLECTION_NAME;
 const QDRANT_API_KEY = process.env.QDRANT_API_KEY;
-
-type QdrantPutResponse = {
-  operation_id: number;
-  status: "acknowledged" | "completed";
-};
-
-type QdrantSearchResponse = {
-  id: string | number;
-  version: number;
-  score: number;
-  payload?: Record<string, unknown> | { [key: string]: unknown };
-  vector?: number[] | Record<string, unknown> | { [key: string]: number[] };
-}[];
-
-type QdrantDeleteResponse = {
-  operation_id: number;
-  status: "acknowledged" | "completed";
-};
 
 // connect to Qdrant Cloud
 const client = new QdrantClient({
@@ -29,6 +16,7 @@ const client = new QdrantClient({
   apiKey: QDRANT_API_KEY,
 });
 
+// add points to Qdrant Cloud
 export const putPoints = async (
   points: Point[]
 ): Promise<QdrantPutResponse> => {
@@ -45,6 +33,7 @@ export const putPoints = async (
   }
 };
 
+// delete points from Qdrant Cloud
 export const deletePoints = async (
   userEmail: string,
   documentName: string
@@ -78,6 +67,7 @@ export const deletePoints = async (
   }
 };
 
+// search points from Qdrant Cloud
 export const searchPoints = async (
   userEmail: string,
   documentName: string,

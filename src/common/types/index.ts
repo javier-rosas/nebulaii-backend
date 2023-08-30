@@ -20,3 +20,21 @@ export type LargeChunk = {
   documentName: string;
   text: string;
 };
+
+export type QdrantPutResponse = {
+  operation_id: number;
+  status: "acknowledged" | "completed";
+};
+
+export type QdrantSearchResponse = {
+  id: string | number;
+  version: number;
+  score: number;
+  payload?: Record<string, unknown> | { [key: string]: unknown };
+  vector?: number[] | Record<string, unknown> | { [key: string]: number[] };
+}[];
+
+export type QdrantDeleteResponse = {
+  operation_id: number;
+  status: "acknowledged" | "completed";
+};

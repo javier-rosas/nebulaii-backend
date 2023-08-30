@@ -47,6 +47,11 @@ functions:
     timeout: 200
   search:
     handler: src/search/handler.handler
+    events:
+      - httpApi: 
+          path: /users/{userEmail}/documents/{documentName}/search
+          method: post
+    timeout: 200
   payments:
     handler: src/payments/handler.handler
   mongo:

@@ -1,6 +1,4 @@
 import { QdrantClient } from "@qdrant/js-client-rest";
-//import dotenv from "dotenv";
-//dotenv.config();
 
 // connect to Qdrant Cloud
 const client = new QdrantClient({

@@ -7,13 +7,14 @@ import { mongooseConnect } from "../common/mongoose/mongooseConnect";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Handle POST request for creating or updating user
+// Handler for the Lambda function.
 async function handleMainEvent(event: any) {
   const userEmail = event.pathParameters.userEmail;
   const documentName = event.pathParameters.documentName;
   return await main(userEmail, documentName);
 }
 
+// Lambda function handler
 export const mainHandler: APIGatewayProxyHandler = async (event: any) => {
   try {
     await mongooseConnect();
@@ -28,6 +29,7 @@ export const mainHandler: APIGatewayProxyHandler = async (event: any) => {
   }
 };
 
+// Lambda function handler with middleware
 export const handler = middy(mainHandler).use(
   verifyTokenMiddleware({ secret: JWT_SECRET })
 );
