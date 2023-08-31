@@ -1,7 +1,7 @@
 import { createResponse } from "../common/utils/createResponse";
 import { searchPoints } from "../common/quadrant/queries";
 import { fetchEmbedding } from "../common/openai/fetchEmbedding";
-import { getChunkByUserEmailAndDocumentName } from "../common/mongoose/queries/largeChunk";
+import { getChunkByIdUserEmailAndDocumentName } from "../common/mongoose/queries/largeChunk";
 import { QdrantSearchResponse } from "../common/types";
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY;
@@ -55,7 +55,7 @@ const searchMongoDBUsingParentIds = async (
     const parentIds = res.map((item) => item.payload.parentId);
     const documents = [];
     for (const parentId of parentIds) {
-      const document = await getChunkByUserEmailAndDocumentName(
+      const document = await getChunkByIdUserEmailAndDocumentName(
         parentId as string,
         userEmail,
         documentName

@@ -1,10 +1,15 @@
 import DocumentModel from "../models/DocumentModel";
+import mongoose from "mongoose";
+import LargeChunkModel from "../models/LargeChunkModel";
 
-export const createOrUpdateDocument = async (documentObj: any) => {
+export const createOrUpdateDocument = async (
+  userEmail: string,
+  documentName: string
+) => {
   try {
-    const filter = {
-      userEmail: documentObj.userEmail,
-      documentName: documentObj.documentName,
+    const filterAndObject = {
+      userEmail,
+      documentName,
     };
     const options = {
       new: true,
@@ -13,8 +18,8 @@ export const createOrUpdateDocument = async (documentObj: any) => {
       runValidators: true,
     };
     const documentMongooseModel = await DocumentModel.findOneAndUpdate(
-      filter,
-      documentObj,
+      filterAndObject,
+      filterAndObject,
       options
     );
     return documentMongooseModel;
@@ -48,12 +53,18 @@ export const deleteDocumentByUserEmailAndDocumentName = async (
   userEmail: string,
   documentName: string
 ) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     await DocumentModel.findOneAndDelete({ userEmail, documentName });
+    await LargeChunkModel.deleteMany({ userEmail, documentName });
+    await session.commitTransaction();
   } catch (err) {
-    console.log("deleteDocumentByUserEmailAnddocumentname", err);
+    await session.abortTransaction();
     throw new Error(
       "Error deleting document from MongoDB by user email and documentname"
     );
+  } finally {
+    session.endSession();
   }
 };

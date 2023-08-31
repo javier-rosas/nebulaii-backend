@@ -1,6 +1,7 @@
 import LargeChunkModel from "../models/LargeChunkModel";
 import { LargeChunk } from "../../types";
 import mongoose from "mongoose";
+import { createOrUpdateDocument } from "./document";
 
 export const createOrUpdateChunk = async (largeChunk: LargeChunk) => {
   try {
@@ -33,6 +34,7 @@ export const createOrUpdateChunks = async (largeChunks: LargeChunk[]) => {
     const { userEmail, documentName } = largeChunks[0];
     await LargeChunkModel.deleteMany({ userEmail, documentName }, { session });
     await LargeChunkModel.insertMany(largeChunks, { session });
+    await createOrUpdateDocument(userEmail, documentName);
     await session.commitTransaction();
   } catch (err) {
     await session.abortTransaction();
@@ -42,7 +44,7 @@ export const createOrUpdateChunks = async (largeChunks: LargeChunk[]) => {
   }
 };
 
-export const getChunkByUserEmailAndDocumentName = async (
+export const getChunkByIdUserEmailAndDocumentName = async (
   _id: string,
   userEmail: string,
   documentName: string
@@ -56,20 +58,5 @@ export const getChunkByUserEmailAndDocumentName = async (
     return document;
   } catch (err) {
     throw new Error("Error getting document by user email and documentname");
-  }
-};
-
-export const deleteChunkByUserEmailAndDocumentName = async (
-  _id: string,
-  userEmail: string,
-  documentName: string
-) => {
-  try {
-    await LargeChunkModel.findOneAndDelete({ _id, userEmail, documentName });
-  } catch (err) {
-    console.log("deleteDocumentByUserEmailAnddocumentname", err);
-    throw new Error(
-      "Error deleting document from MongoDB by user email and documentname"
-    );
   }
 };

@@ -6,6 +6,7 @@ import {
   getDocumentByUserEmailAndDocumentName,
   deleteDocumentByUserEmailAndDocumentName,
 } from "../common/mongoose/queries/document";
+import { deletePoints } from "../common/quadrant/queries";
 import { createResponse } from "../common/utils/createResponse";
 import { verifyTokenMiddleware } from "../common/utils/verifyTokenMiddleware";
 
@@ -34,10 +35,9 @@ async function handleGetDocumentByUserEmailAndDocumentName(event: any) {
 async function handleDeleteDocumentByUserEmailAndDocumentName(event: any) {
   const userEmail = event.pathParameters.userEmail;
   const documentName = event.pathParameters.documentName;
-  return await deleteDocumentByUserEmailAndDocumentName(
-    userEmail,
-    documentName
-  );
+  await deleteDocumentByUserEmailAndDocumentName(userEmail, documentName);
+  await deletePoints(userEmail, documentName);
+  return createResponse(200, { message: "Document deleted successfully" });
 }
 
 const mainHandler = async (event: any): Promise<any> => {

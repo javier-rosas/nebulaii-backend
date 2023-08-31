@@ -54,20 +54,20 @@ functions:
     timeout: 200
   payments:
     handler: src/payments/handler.handler
-  mongo:
-    handler: src/mongo/handler.handler
+  user:
+    handler: src/user/handler.handler
     events:
       - httpApi:
           path: /users
           method: post
       - httpApi:
-          path: /users/{userEmail}/files
+          path: /users/{userEmail}/documents
           method: get
       - httpApi:
-          path: /users/{userEmail}/files/{filename}
+          path: /users/{userEmail}/documents/{documentName}
           method: get
       - httpApi:
-          path: /users/{userEmail}/files/{filename}
+          path: /users/{userEmail}/documents/{documentName}
           method: delete
   python-func:
     runtime: python3.9

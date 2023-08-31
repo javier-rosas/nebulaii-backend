@@ -124,11 +124,7 @@ export const splitTxtAndProcessChunks = async (
     );
     return points;
   } catch (error) {
-    console.error(
-      "Error while splitting content and processing chunks:",
-      error
-    );
-    throw error;
+    throw new Error("Error while splitting content and processing chunks");
   }
 };
 
@@ -138,16 +134,20 @@ export const createPointFromChunk = async (
   userEmail: string,
   documentName: string
 ): Promise<Point> => {
-  const res = await fetchEmbedding(chunk.content, OPEN_AI_API_KEY);
-  const vector = res?.data[0]?.embedding;
-  return {
-    id: uuidv4(),
-    vector,
-    payload: {
-      userEmail,
-      documentName,
-      text: chunk.content,
-      parentId: chunk?.parentId,
-    },
-  };
+  try {
+    const res = await fetchEmbedding(chunk.content, OPEN_AI_API_KEY);
+    const vector = res?.data[0]?.embedding;
+    return {
+      id: uuidv4(),
+      vector,
+      payload: {
+        userEmail,
+        documentName,
+        text: chunk.content,
+        parentId: chunk?.parentId,
+      },
+    };
+  } catch (error) {
+    throw new Error("Error creating point from chunk");
+  }
 };
