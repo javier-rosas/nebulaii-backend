@@ -1,13 +1,14 @@
+import {
+  deleteDocumentByUserEmailAndDocumentName,
+  getDocumentByUserEmailAndDocumentName,
+  getDocumentsByUserEmail,
+} from "../common/mongoose/queries/document";
+
+import { createOrUpdateUser } from "../common/mongoose/queries/user";
+import { createResponse } from "../common/utils/createResponse";
+import { deletePoints } from "../common/quadrant/queries";
 import middy from "middy";
 import { mongooseConnect } from "../common/mongoose/mongooseConnect";
-import { createOrUpdateUser } from "../common/mongoose/queries/user";
-import {
-  getDocumentsByUserEmail,
-  getDocumentByUserEmailAndDocumentName,
-  deleteDocumentByUserEmailAndDocumentName,
-} from "../common/mongoose/queries/document";
-import { deletePoints } from "../common/quadrant/queries";
-import { createResponse } from "../common/utils/createResponse";
 import { verifyTokenMiddleware } from "../common/utils/verifyTokenMiddleware";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -15,6 +16,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // Handle POST request for creating or updating user
 async function handleCreateOrUpdateUser(event: any) {
   const user = JSON.parse(event.body);
+  console.log("HEREEEE --- ", user);
   return await createOrUpdateUser(user);
 }
 

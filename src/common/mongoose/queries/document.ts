@@ -30,7 +30,9 @@ export const createOrUpdateDocument = async (
 
 export const getDocumentsByUserEmail = async (userEmail: string) => {
   try {
+    console.log("HEREEEE  4 --- ", userEmail);
     const document = await DocumentModel.find({ userEmail }).lean();
+    console.log("HEREEEE  5 --- ", document);
     return document;
   } catch (err) {
     throw new Error("Error getting documents by user email");

@@ -23,6 +23,7 @@ custom:
 
 
 package:
+  excludeDevDependencies: false
   individually: true
 
 functions:
@@ -44,14 +45,14 @@ functions:
       - httpApi: 
           path: /users/{userEmail}/documents/{documentName}/process-doc
           method: get
-    timeout: 200
+    timeout: 890
   search:
     handler: src/search/handler.handler
     events:
       - httpApi: 
           path: /users/{userEmail}/documents/{documentName}/search
           method: post
-    timeout: 200
+    timeout: 890
   payments:
     handler: src/payments/handler.handler
   user:
@@ -69,6 +70,7 @@ functions:
       - httpApi:
           path: /users/{userEmail}/documents/{documentName}
           method: delete
+    timeout: 890
   python-func:
     runtime: python3.9
     handler: src/python-func/handler.handler
