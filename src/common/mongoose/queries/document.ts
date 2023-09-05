@@ -1,6 +1,6 @@
 import DocumentModel from "../models/DocumentModel";
-import mongoose from "mongoose";
 import LargeChunkModel from "../models/LargeChunkModel";
+import mongoose from "mongoose";
 
 export const createOrUpdateDocument = async (
   userEmail: string,
@@ -30,7 +30,7 @@ export const createOrUpdateDocument = async (
 
 export const getDocumentsByUserEmail = async (userEmail: string) => {
   try {
-    const document = await DocumentModel.find({ userEmail });
+    const document = await DocumentModel.find({ userEmail }).lean();
     return document;
   } catch (err) {
     throw new Error("Error getting documents by user email");

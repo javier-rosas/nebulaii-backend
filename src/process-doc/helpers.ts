@@ -1,9 +1,10 @@
-import { v4 as uuidv4 } from "uuid";
-import { fetchEmbedding } from "../common/openai/fetchEmbedding";
-import { Point, Chunk, LargeChunk } from "../common/types";
+import { Chunk, LargeChunk, Point } from "../common/types";
+
 import { S3 } from "aws-sdk";
 import { TokenTextSplitter } from "langchain/text_splitter";
 import { createOrUpdateChunks } from "../common/mongoose/queries/largeChunk";
+import { fetchEmbedding } from "../common/openai/fetchEmbedding";
+import { v4 as uuidv4 } from "uuid";
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY;
 const AWS_BUCKET = process.env.AWS_BUCKET;
