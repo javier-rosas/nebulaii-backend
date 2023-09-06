@@ -26,6 +26,7 @@ export const main = async (
     await deletePoints(userEmail, documentName);
     if (isExcedesMaxTokens(preprocessedContent)) {
       await processLargeDocument(userEmail, documentName, preprocessedContent);
+      console.log("Finished processing large document");
     } else {
       await processSmallDocument(userEmail, documentName, preprocessedContent);
     }
