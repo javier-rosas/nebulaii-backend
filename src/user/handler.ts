@@ -15,22 +15,27 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // Handle POST request for creating or updating user
 async function handleCreateOrUpdateUser(event: any) {
-  const user = JSON.parse(event.body);
-  console.log("HEREEEE --- ", user);
-  return await createOrUpdateUser(user);
+  const eventUser = JSON.parse(event.body);
+  const user = await createOrUpdateUser(eventUser);
+  return createResponse(200, user);
 }
 
 // Handle GET request to fetch documents by user email
 async function handleGetDocumentsByUserEmail(event: any) {
   const userEmail = event.pathParameters.userEmail;
-  return await getDocumentsByUserEmail(userEmail);
+  const documents = await getDocumentsByUserEmail(userEmail);
+  return createResponse(200, documents);
 }
 
 // Handle GET request to fetch document by user email and documen name
 async function handleGetDocumentByUserEmailAndDocumentName(event: any) {
   const userEmail = event.pathParameters.userEmail;
   const documentName = event.pathParameters.documentName;
-  return await getDocumentByUserEmailAndDocumentName(userEmail, documentName);
+  const document = await getDocumentByUserEmailAndDocumentName(
+    userEmail,
+    documentName
+  );
+  return createResponse(200, document);
 }
 
 // Handle DELETE request to delete document by user email and document name
@@ -42,7 +47,8 @@ async function handleDeleteDocumentByUserEmailAndDocumentName(event: any) {
   return createResponse(200, { message: "Document deleted successfully" });
 }
 
-const mainHandler = async (event: any): Promise<any> => {
+const mainHandler = async (event: any, context: any): Promise<any> => {
+  context.callbackWaitsForEmptyEventLoop = false;
   try {
     await mongooseConnect();
     switch (event.routeKey) {

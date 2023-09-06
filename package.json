@@ -7,7 +7,7 @@
     "@qdrant/js-client-rest": "^1.4.0",
     "aws-sdk": "^2.1430.0",
     "jsonwebtoken": "^9.0.1",
-    "langchain": "^0.0.124",
+    "langchain": "^0.0.144",
     "middy": "^0.36.0",
     "mongoose": "^7.3.4",
     "uuid": "^9.0.0"
