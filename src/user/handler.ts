@@ -52,14 +52,18 @@ const mainHandler = async (event: any, context: any): Promise<any> => {
   try {
     await mongooseConnect();
     switch (event.routeKey) {
+      // Handle user requests
       case "POST /users":
         return await handleCreateOrUpdateUser(event);
+
+      // Handle document requests
       case "GET /users/{userEmail}/documents":
         return await handleGetDocumentsByUserEmail(event);
       case "GET /users/{userEmail}/documents/{documentName}":
         return await handleGetDocumentByUserEmailAndDocumentName(event);
       case "DELETE /users/{userEmail}/documents/{documentName}":
         return await handleDeleteDocumentByUserEmailAndDocumentName(event);
+      // Default 404 route
       default:
         return createResponse(404, { error: "Not Found" });
     }

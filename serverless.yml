@@ -13,9 +13,12 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
+        - "lambda:InvokeFunction"
+      Resource: "*" # This allows invoking any Lambda function. You might want to restrict this to specific functions later.
+    - Effect: "Allow"
+      Action:
         - "s3:GetObject"
       Resource: "arn:aws:s3:::nebulaii-test/*"
-
 
 custom:
   serverless-offline:
@@ -27,25 +30,42 @@ package:
   individually: true
 
 functions:
+  # auth lambda: 
   auth:
     handler: src/auth/handler.handler
     events:
       - httpApi:
           path: /auth
           method: post
+  
+  # upload lambda:
   upload:
     handler: src/upload/handler.handler
     events:
       - httpApi: 
           path: /upload
           method: get
+
+  # process-doc lambda:
   process-doc:
     handler: src/process-doc/handler.handler
+    timeout: 890
+
+  # start-job lambda:
+  job:
+    handler: src/job/handler.handler
     events:
       - httpApi: 
-          path: /users/{userEmail}/documents/{documentName}/process-doc
+          path: /users/{userEmail}/jobs/{documentName}/start-job
+          method: put
+      - httpApi: 
+          path: /users/{userEmail}/jobs/{documentName}
           method: get
-    timeout: 890
+      - httpApi: 
+          path: /users/{userEmail}/jobs/{documentName}
+          method: delete
+
+  # search lambda:
   search:
     handler: src/search/handler.handler
     events:
@@ -53,8 +73,12 @@ functions:
           path: /users/{userEmail}/documents/{documentName}/search
           method: post
     timeout: 890
+
+  # payments lambda:
   payments:
     handler: src/payments/handler.handler
+
+  # user lambda:
   user:
     handler: src/user/handler.handler
     events:
@@ -71,6 +95,8 @@ functions:
           path: /users/{userEmail}/documents/{documentName}
           method: delete
     timeout: 890
+
+  # python func lambda:
   python-func:
     runtime: python3.9
     handler: src/python-func/handler.handler
