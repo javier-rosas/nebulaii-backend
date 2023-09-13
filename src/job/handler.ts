@@ -12,7 +12,11 @@ import { mongooseConnect } from "../common/mongoose/mongooseConnect";
 import { verifyTokenMiddleware } from "../common/utils/verifyTokenMiddleware";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const lambda = new Lambda();
+const lambda = new Lambda({
+  endpoint: process.env.IS_OFFLINE
+    ? "http://localhost:4002"
+    : "https://lambda.us-east-1.amazonaws.com",
+});
 
 // Handler for the start-job function.
 async function handleStartJobEvent(event: any) {
@@ -22,7 +26,7 @@ async function handleStartJobEvent(event: any) {
   // Invoke the processMain Lambda function asynchronously
   lambda.invoke(
     {
-      FunctionName: "process-doc",
+      FunctionName: "nebulaii-backend-dev-process-doc",
       InvocationType: "Event",
       Payload: JSON.stringify({ userEmail, documentName }),
     },

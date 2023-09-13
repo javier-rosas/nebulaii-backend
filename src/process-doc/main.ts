@@ -23,6 +23,7 @@ export const main = async (
     const bucketKey = `${userEmail}/${documentName}`;
     const rawContent = await fetchTxtFromS3(bucketKey);
     const preprocessedContent = preprocessTxt(rawContent);
+    console.log("HEREEE -- 1");
     await deletePoints(userEmail, documentName);
     if (isExcedesMaxTokens(preprocessedContent)) {
       await processLargeDocument(userEmail, documentName, preprocessedContent);
@@ -30,6 +31,7 @@ export const main = async (
     } else {
       await processSmallDocument(userEmail, documentName, preprocessedContent);
     }
+    console.log("Finished processing document");
     return createResponse(200, { message: "Success" });
   } catch (err) {
     console.error("Error processing file: ", err);
