@@ -14,7 +14,7 @@ provider:
     - Effect: "Allow"
       Action:
         - "lambda:InvokeFunction"
-      Resource: "*" # This allows invoking any Lambda function. You might want to restrict this to specific functions later.
+      Resource: "*"
     - Effect: "Allow"
       Action:
         - "s3:GetObject"
@@ -58,7 +58,7 @@ functions:
     events:
       - httpApi: 
           path: /users/{userEmail}/jobs/{documentName}/start-job
-          method: put
+          method: get
       - httpApi: 
           path: /users/{userEmail}/jobs/{documentName}
           method: get

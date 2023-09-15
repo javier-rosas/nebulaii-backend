@@ -12,8 +12,10 @@ import { mongooseConnect } from "../common/mongoose/mongooseConnect";
 import { verifyTokenMiddleware } from "../common/utils/verifyTokenMiddleware";
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const IS_OFFLINE = process.env.IS_OFFLINE === "true";
+if (IS_OFFLINE) console.log("IS_OFFLINE == true");
 const lambda = new Lambda({
-  endpoint: process.env.IS_OFFLINE
+  endpoint: IS_OFFLINE
     ? "http://localhost:4002"
     : "https://lambda.us-east-1.amazonaws.com",
 });
@@ -23,20 +25,19 @@ async function handleStartJobEvent(event: any) {
   const userEmail = event.pathParameters.userEmail;
   const documentName = event.pathParameters.documentName;
   const job = await createJob(userEmail, documentName);
-  // Invoke the processMain Lambda function asynchronously
-  lambda.invoke(
-    {
-      FunctionName: "nebulaii-backend-dev-process-doc",
-      InvocationType: "Event",
-      Payload: JSON.stringify({ userEmail, documentName }),
-    },
-    (error, data) => {
-      if (error) {
-        console.error("Error invoking processMain:", error);
-      }
-    }
-  );
-  return createResponse(202, job);
+  const Payload = JSON.stringify({ userEmail, documentName });
+  const params = {
+    FunctionName: "nebulaii-backend-dev-process-doc",
+    InvocationType: "Event",
+    Payload,
+  };
+  try {
+    await lambda.invoke(params).promise();
+    return createResponse(202, { message: "Running job.", job });
+  } catch (error) {
+    console.error("Failed to invoke target lambda:", error?.message);
+    return createResponse(500, { message: "Internal Server Error" });
+  }
 }
 
 // Handle GET request to fetch jobs by user email and document name
@@ -56,11 +57,15 @@ async function handleDeleteJobByUserEmailAndDocumentName(event: any) {
 }
 
 // Lambda function handler for the start-job
-export const startJobHandler: APIGatewayProxyHandler = async (event: any) => {
+export const startJobHandler: APIGatewayProxyHandler = async (
+  event: any,
+  context: any
+) => {
+  context.callbackWaitsForEmptyEventLoop = false;
   try {
     await mongooseConnect();
     switch (event.routeKey) {
-      case "PUT /users/{userEmail}/jobs/{documentName}/start-job":
+      case "GET /users/{userEmail}/jobs/{documentName}/start-job":
         return await handleStartJobEvent(event);
       case "GET /users/{userEmail}/jobs/{documentName}":
         return await handleGetJobByUserEmailAndDocumentName(event);

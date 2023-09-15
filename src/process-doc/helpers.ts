@@ -123,7 +123,6 @@ export const splitTxtAndProcessChunks = async (
         createPointFromChunk(chunk, userEmail, documentName)
       )
     );
-    console.log("Finished splitting text into chunks and fetched embeddings");
     return points;
   } catch (error) {
     throw new Error("Error while splitting content and processing chunks");
