@@ -10,6 +10,7 @@ import { deletePoints, putPoints } from "../common/quadrant/queries";
 import { createOrUpdateChunk } from "../common/mongoose/queries/largeChunk";
 import { createResponse } from "../common/utils/createResponse";
 import { isExcedesMaxTokens } from "./utils";
+import { updateJobStatus } from "../common/mongoose/queries/job";
 import { v4 as uuidv4 } from "uuid";
 
 const CHUNK_SIZE = 50;
@@ -32,6 +33,7 @@ export const main = async (
     console.log("Finished processing document");
     return createResponse(200, { message: "Success" });
   } catch (err) {
+    await updateJobStatus(userEmail, documentName, "FAILED");
     console.error("Error processing file: ", err);
     throw err;
   }

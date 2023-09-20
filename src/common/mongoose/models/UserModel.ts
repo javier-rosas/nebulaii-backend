@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema(
     sid: { type: String },
     sub: { type: String },
     updated_at: { type: String },
-    accountType: { type: String, default: "BASIC", required: true },
   },
   { collection: "users" }
 );

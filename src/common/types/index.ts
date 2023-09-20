@@ -11,7 +11,7 @@ export type Point = {
 
 export type Chunk = {
   content: string;
-  parentId?: string; // only for small chunks
+  parentId?: string; // parentId is only for small chunks
 };
 
 export type LargeChunk = {

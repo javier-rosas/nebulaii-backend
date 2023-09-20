@@ -1,4 +1,5 @@
 import JobModel from "../models/JobModel";
+import mongoose from "mongoose";
 
 export const createJob = async (userEmail: string, documentName: string) => {
   try {
@@ -73,5 +74,24 @@ export const deleteJobByUserEmailAndDocumentName = async (
     return await JobModel.findOneAndDelete(filter);
   } catch (err) {
     throw new Error("Error deleting job by user email and document name.");
+  }
+};
+
+export const getJobStatusAndDeleteJobIfSuccess = async (
+  userEmail: string,
+  documentName: string
+) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const job = await getJobByUserEmailAndDocumentName(userEmail, documentName);
+    if (job && job.status === "SUCCESS")
+      await deleteJobByUserEmailAndDocumentName(userEmail, documentName);
+    await session.commitTransaction();
+  } catch (err) {
+    await session.abortTransaction();
+    throw new Error("Error updating job status and deleting job if success");
+  } finally {
+    session.endSession();
   }
 };
