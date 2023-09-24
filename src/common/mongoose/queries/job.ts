@@ -13,7 +13,6 @@ export const createJob = async (userEmail: string, documentName: string) => {
       setDefaultsOnInsert: true,
       runValidators: true,
     };
-
     return await JobModel.findOneAndUpdate(
       filterAndObject,
       filterAndObject,

@@ -8,7 +8,7 @@ const jobSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["RUNNING", "FAILED", "SUCCESS"],
+      enum: ["RUNNING", "ERR", "SUCCESS"],
       default: "RUNNING",
     },
   },
