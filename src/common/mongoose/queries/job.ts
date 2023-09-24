@@ -1,12 +1,11 @@
-import JobModel from "../models/JobModel";
 import mongoose from "mongoose";
+import JobModel from "../models/JobModel";
 
 export const createJob = async (userEmail: string, documentName: string) => {
   try {
     const filterAndObject = {
       userEmail,
       documentName,
-      status: "RUNNING", // Assuming you start with a RUNNING status
     };
     const options = {
       new: true,

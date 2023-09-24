@@ -1,3 +1,4 @@
+import { deletePoints, putPoints } from "../common/quadrant/queries";
 import { Chunk, Point } from "../common/types";
 import {
   createPointFromChunk,
@@ -5,13 +6,12 @@ import {
   preprocessTxt,
   splitTxtAndProcessChunks,
 } from "./helpers";
-import { deletePoints, putPoints } from "../common/quadrant/queries";
 
+import { v4 as uuidv4 } from "uuid";
+import { updateJobStatus } from "../common/mongoose/queries/job";
 import { createOrUpdateChunk } from "../common/mongoose/queries/largeChunk";
 import { createResponse } from "../common/utils/createResponse";
 import { isExcedesMaxTokens } from "./utils";
-import { updateJobStatus } from "../common/mongoose/queries/job";
-import { v4 as uuidv4 } from "uuid";
 
 const CHUNK_SIZE = 50;
 
@@ -33,8 +33,8 @@ export const main = async (
     console.log("Finished processing document");
     return createResponse(200, { message: "Success" });
   } catch (err) {
-    await updateJobStatus(userEmail, documentName, "FAILED");
-    console.error("Error processing file: ", err);
+    console.log("Error processing file: ", err.message);
+    await updateJobStatus(userEmail, documentName, "ERR");
     throw err;
   }
 };
