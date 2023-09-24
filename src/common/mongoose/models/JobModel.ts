@@ -12,7 +12,7 @@ const jobSchema = new mongoose.Schema(
       default: "RUNNING",
     },
   },
-  { collection: "jobs" }
+  { collection: "jobs", _id: false }
 );
 
 const JobModel = mongoose.model("JobModel", jobSchema);

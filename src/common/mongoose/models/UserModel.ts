@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
     sub: { type: String },
     updated_at: { type: String },
   },
-  { collection: "users" }
+  { collection: "users", _id: false }
 );
 
 const UserModel = mongoose.model("UserModel", userSchema);

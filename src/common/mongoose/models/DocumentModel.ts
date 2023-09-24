@@ -7,7 +7,7 @@ const documentSchema = new mongoose.Schema(
     description: { type: String, required: false },
     dateAdded: { type: Date, default: Date.now, required: false },
   },
-  { collection: "documents" }
+  { collection: "documents", _id: false }
 );
 
 const DocumentModel = mongoose.model("DocumentModel", documentSchema);
