@@ -2,12 +2,14 @@ import ChatModel from "../models/ChatModel";
 
 export const createOrUpdateChat = async (
   userEmail: string,
-  documentName: string
+  documentName: string,
+  chat: []
 ) => {
   try {
     const filterAndObject = {
       userEmail,
       documentName,
+      chat,
     };
 
     const options = {
@@ -40,7 +42,7 @@ export const getChat = async (userEmail: string, documentName: string) => {
 export const addMessageToChat = async (
   userEmail: string,
   documentName: String,
-  message: { bot: string; user: string }
+  message: { isBot: boolean; message: string }
 ) => {
   return await ChatModel.findOneAndUpdate(
     { userEmail, documentName },

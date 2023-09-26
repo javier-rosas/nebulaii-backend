@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
-    bot: { type: String, required: false },
-    user: { type: String, required: false },
+    isBot: { type: Boolean, required: false },
+    message: { type: String, required: false },
   },
   { _id: false }
 );

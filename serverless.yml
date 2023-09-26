@@ -73,6 +73,15 @@ functions:
       - httpApi: 
           path: /users/{userEmail}/documents/{documentName}/search
           method: post
+      - httpApi: 
+          path: /users/{userEmail}/chats/{documentName}
+          method: get
+      - httpApi: 
+          path: /chats
+          method: put
+      - httpApi: 
+          path: /chats
+          method: post
     timeout: 890
 
   # payments lambda:
