@@ -18,7 +18,7 @@ async function handleSearch(event: any) {
   const userEmail = event.pathParameters.userEmail;
   const documentName = event.pathParameters.documentName;
   const body = JSON.parse(event.body);
-  const { question } = body as { question: string };
+  const { question } = body;
   return await main(userEmail, documentName, question);
 }
 
@@ -42,7 +42,6 @@ async function handleAddMessageToChat(event: any) {
   const body = JSON.parse(event.body);
   const { userEmail, documentName, message } = body;
   const res = await addMessageToChat(userEmail, documentName, message);
-  console.log(res);
   return createResponse(200, res);
 }
 

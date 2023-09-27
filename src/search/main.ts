@@ -1,9 +1,9 @@
-import { createResponse } from "../common/utils/createResponse";
-import { searchPoints } from "../common/quadrant/queries";
-import { fetchEmbedding } from "../common/openai/fetchEmbedding";
 import { getChunkByIdUserEmailAndDocumentName } from "../common/mongoose/queries/largeChunk";
+import { fetchEmbedding } from "../common/openai/fetchEmbedding";
+import { searchPoints } from "../common/quadrant/queries";
 import { QdrantSearchResponse } from "../common/types";
-
+import { createResponse } from "../common/utils/createResponse";
+import { getGptAnswer } from "./getGptAnswer";
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY;
 
 export const main = async (
@@ -22,7 +22,10 @@ export const main = async (
       userEmail,
       documentName
     );
-    return createResponse(200, mongoDocuments);
+    const responseTexts = mongoDocuments.map((doc) => doc.text);
+    const prompt = `Answer the following question based on the provided context: ${responseTexts.join()} \n question: ${question}`;
+    const gptAnswer = await getGptAnswer(prompt);
+    return createResponse(200, gptAnswer);
   } catch (error) {
     return createResponse(500, { error: "Internal Server Error" });
   }
